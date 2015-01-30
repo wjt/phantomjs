@@ -185,6 +185,7 @@ private:
     void setProxyPort(const int value);
     void setAuthUser(const QString &value);
     void setAuthPass(const QString &value);
+    void setWebdriverPort(const QString &value);
 
     QCommandLine *m_cmdLine;
     bool m_autoLoadImages;
@@ -219,7 +220,7 @@ private:
     QString m_sslProtocol;
     QString m_sslCertificatesPath;
     QString m_webdriverIp;
-    QString m_webdriverPort;
+    int m_webdriverPort;
     QString m_webdriverLogFile;
     QString m_webdriverLogLevel;
     QString m_webdriverSeleniumGridHub;

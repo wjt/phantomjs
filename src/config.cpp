@@ -457,15 +457,27 @@ bool Config::javascriptCanCloseWindows() const
 void Config::setWebdriver(const QString &webdriverConfig)
 {
     // Parse and validate the configuration
-    bool isValidPort;
     QStringList wdCfg = webdriverConfig.split(':');
-    if (wdCfg.length() == 1 && wdCfg[0].toInt(&isValidPort) && isValidPort) {
+    if (wdCfg.length() == 1) {
         // Only a PORT was provided
-        m_webdriverPort = wdCfg[0];
-    } else if(wdCfg.length() == 2 && !wdCfg[0].isEmpty() && wdCfg[1].toInt(&isValidPort) && isValidPort) {
+        setWebdriverPort(wdCfg[0]);
+    } else if(wdCfg.length() == 2 && !wdCfg[0].isEmpty()) {
         // Both IP and PORT provided
         m_webdriverIp = wdCfg[0];
-        m_webdriverPort = wdCfg[1];
+        setWebdriverPort(wdCfg[1]);
+    } else {
+        setUnknownOption(QString("--webdriver=%1 must be of the form [<IP>:]<PORT>").arg(webdriverConfig));
+    }
+}
+
+void Config::setWebdriverPort(const QString &value) {
+    bool isValidInt;
+    int port = value.toInt(&isValidInt);
+
+    if (isValidInt && 0 < port && port < 65536) {
+        m_webdriverPort = port;
+    } else {
+        setUnknownOption(QString("Invalid port: '%1'").arg(value));
     }
 }
 
@@ -476,7 +488,7 @@ QString Config::webdriver() const
 
 bool Config::isWebdriverMode() const
 {
-    return !m_webdriverPort.isEmpty();
+    return m_webdriverPort != -1;
 }
 
 void Config::setWebdriverLogFile(const QString& webdriverLogFile)
@@ -542,7 +554,7 @@ void Config::resetToDefaults()
     m_sslProtocol = "tlsv1";
     m_sslCertificatesPath.clear();
     m_webdriverIp = QString();
-    m_webdriverPort = QString();
+    m_webdriverPort = -1;
     m_webdriverLogFile = QString();
     m_webdriverLogLevel = "INFO";
     m_webdriverSeleniumGridHub = QString();
