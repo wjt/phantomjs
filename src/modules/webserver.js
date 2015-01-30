@@ -107,6 +107,7 @@ exports.create = function (opts) {
     }
 
     defineSetter("onNewRequest", "newRequest");
+    defineSetter("onLogEvent", "logEvent");
 
     server.listen = function (port, arg1, arg2) {
         if (arguments.length === 2 && typeof arg1 === 'function') {

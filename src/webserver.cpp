@@ -153,6 +153,12 @@ void WebServer::close()
 
 bool WebServer::handleRequest(mg_event event, mg_connection *conn, const mg_request_info *request)
 {
+    if (event == MG_EVENT_LOG) {
+        qWarning() << "webserver:" << request->log_message;
+        logEvent(QString(request->log_message));
+        return false;
+    }
+
     if (event != MG_NEW_REQUEST) {
         return false;
     }

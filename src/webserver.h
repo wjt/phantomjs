@@ -80,6 +80,8 @@ signals:
     /// @p request is a WebServerRequest, @p response is a WebServerResponse
     void newRequest(QVariant request, QObject *response);
 
+    void logEvent(QString message);
+
 public:
     bool handleRequest(mg_event event, mg_connection *conn, const mg_request_info *request);
 
