@@ -66,6 +66,7 @@ try {
     router = new ghostdriver.RouterReqHand();
 
     // Start the server
+    server.onLogEvent = function(message) { _log.warn("Main", message); };
     if (server.listen(ghostdriver.config.port, { "keepAlive" : true }, router.handle)) {
         _log.info("Main", "running on port " + server.port);
 
