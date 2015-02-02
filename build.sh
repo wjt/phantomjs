@@ -107,7 +107,9 @@ UNAME_MACHINE=`(uname -m) 2>/dev/null` || UNAME_MACHINE=unknown
 echo "System architecture... ($UNAME_SYSTEM $UNAME_RELEASE $UNAME_MACHINE)"
 echo
 
-cd src/qt && ./preconfig.sh --jobs $COMPILE_JOBS --qt-config "$QT_CFG" $SILENT && cd ../..
+pushd src/qt
+./preconfig.sh --jobs $COMPILE_JOBS --qt-config "$QT_CFG" $SILENT
+popd
 
 echo "Building main PhantomJS application. Please wait..."
 echo

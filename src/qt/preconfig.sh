@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 COMPILE_JOBS=4
 
 QT_CFG=''
