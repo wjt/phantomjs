@@ -54,8 +54,11 @@ enum mg_event {
   MG_NEW_REQUEST,   // New HTTP request has arrived from the client
   MG_HTTP_ERROR,    // HTTP error must be returned to the client
   MG_EVENT_LOG,     // Mongoose logs an event, request_info.log_message
-  MG_INIT_SSL       // Mongoose initializes SSL. Instead of mg_connection *,
+  MG_INIT_SSL,      // Mongoose initializes SSL. Instead of mg_connection *,
                     // SSL context is passed to the callback function.
+  MG_BIND_PORT      // Mongoose was told to listen on port 0; the actual port
+                    // Mongoose has bound to is in the remote_port field of
+                    // mg_request_info passed to the callback
 };
 
 // Prototype for the user-defined function. Mongoose calls this function

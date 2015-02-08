@@ -3375,6 +3375,25 @@ static int set_ports_option(struct mg_context *ctx) {
       set_close_on_exec(listener->sock);
       listener->next = ctx->listening_sockets;
       ctx->listening_sockets = listener;
+
+      if (ntohs(so.lsa.u.sin.sin_port) == 0) {
+        struct sockaddr_in sin;
+        socklen_t len = sizeof(sin);
+
+        if (getsockname(sock, (struct sockaddr *)&sin, &len) == -1) {
+          cry(fc(ctx), "%s: can't getsockname: %s", __func__, strerror(ERRNO));
+        } else {
+          struct mg_request_info request_info;
+          memset(&request_info, 0, sizeof(request_info));
+          request_info.user_data = ctx->user_data;
+          request_info.remote_port = ntohs(sin.sin_port);
+
+          if (ctx->user_callback(MG_BIND_PORT, NULL, &request_info) == NULL) {
+            // oh well, at least log the port
+            cry(fc(ctx), "listening on port %d", ntohs(sin.sin_port));
+          }
+        }
+      }
     }
   }
 
