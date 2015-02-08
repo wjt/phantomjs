@@ -474,7 +474,7 @@ void Config::setWebdriverPort(const QString &value) {
     bool isValidInt;
     int port = value.toInt(&isValidInt);
 
-    if (isValidInt && 0 < port && port < 65536) {
+    if (isValidInt && 0 <= port && port < 65536) {
         m_webdriverPort = port;
     } else {
         setUnknownOption(QString("Invalid port: '%1'").arg(value));

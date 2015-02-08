@@ -124,7 +124,14 @@ bool WebServer::listenOnPort(const QString& port, const QVariantMap& opts)
         return false;
     }
 
-    m_port = port;
+    if (port == "0") {
+        if (m_port.isEmpty()) {
+            qWarning() << "Listened on port 0; Mongoose didn't tell us what port it is actually listening on.";
+            m_port = port;
+        }
+    } else {
+        m_port = port;
+    }
     return true;
 }
 
@@ -153,10 +160,20 @@ void WebServer::close()
 
 bool WebServer::handleRequest(mg_event event, mg_connection *conn, const mg_request_info *request)
 {
-    if (event == MG_EVENT_LOG) {
-        qWarning() << "webserver:" << request->log_message;
-        logEvent(QString(request->log_message));
-        return false;
+    switch (event) {
+        case MG_EVENT_LOG:
+            qWarning() << "webserver:" << request->log_message;
+            logEvent(QString(request->log_message));
+            return false;
+        case MG_BIND_PORT:
+            qDebug() << "webserver: listening on port" << request->remote_port;
+            m_port = QString::number(request->remote_port);
+            return true;
+        case MG_NEW_REQUEST:
+            // handled below
+            break;
+        default:
+            return false;
     }
 
     if (event != MG_NEW_REQUEST) {
